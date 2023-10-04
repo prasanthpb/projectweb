@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+.container{
+padding: 20px;
+margin-top: 60px;
+margin-left: 515px;
+}
+table{
+width: 600px;
+text-align: center;
+margin-left: -85px;
+}
+table th,td{
+height: 40px;
+width: 40px;
+background-color: white;
+}
+form{
+margin-left: -72px;
+}
+input{
+height: 40px;
+width: 160px;
+margin-left: 20px;
+}
+h1{
+margin-left: 145px;
+}
+body{
+background-color: rgb(151, 150, 150);
+}
+</style>
+<title>Display</title>
+</head>
+<body>
+<div class="container">
+<h1>CRUD App</h1>
+<form action="/" method="post">
+33
+<input type="text" placeholder="Name" name="name">
+<input type="text" placeholder="Email" name="email">
+<input type="submit" value="Add" >
+</form><br><br>
+<table border="2">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Update</th>
+<th>Delete</th>
+</tr>
+<% if (test.length > 0) { %>
+<% for (var i = 0; i < test.length; i++) { %>
+<tr>
+<td><%= test[i].id %></td>
+<td><%= test[i].UserName %></td>
+<td><%= test[i].Email %></td>
+<td><a href="/update?id=<%= test[i].id%>">Update</a></td>
+<td><a href="/delete?id=<%= test[i].id%>">Delete</a></td>
+</tr>
+<% } %>
+<% } else { %>
+<tr>
+<td colspan="5"><h3>Data not found</h3></td>
+</tr>
+<% } %>
+</table>
+</div>
+</body>
+</html>
+update.ejs
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update</title>
+<style>
+.container{
+padding: 20px;
+margin-top: 60px;
+margin-left: 400px;
+}
+form{
+margin-left: -72px;
+}
+input{
+height: 40px;
+width: 160px;
+margin-left: 20px;
+}
+h1{
+34
+margin-left: 205px;
+}
+body{
+background-color: rgb(151, 150, 150);
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Update Record</h1>
+<form action="/updateData" method="post">
+<input type="text" placeholder="Name" name="id" value="<%= test[0].id%>" readonly>
+<input type="text" placeholder="Name" name="name" value="<%= test[0].UserName%>" autocomplete="off">
+<input type="text" placeholder="Email" name="email" value="<%= test[0].Email%>" autocomplete="off">
+<input type="submit" value="Update" >
+</form>
+</div>
+</body>
+</html>
+.env
+HOST = localhost
+USER = your_user_name
+PASSWORD = DATABASE = your_db_name
+connection.js
+const mysql = require('mysql');
+require('dotenv').config();
+var con = mysql.createConnection({
+host: process.env.HOST, user: process.env.USER, password: process.env.PASSWORD, database: process.env.DATABASE
+});
+con.connect(function(err){
+if(err) throw err;
+console.log("DB Connected");
+});
+module.exports = con;
+35
+app.js
+const express = require('express');
+//creating a app variable to carry out express framework's functions
+const app = express()
+//dotenv variable for accessing .env file's variables
+require('dotenv').config();
+//extablish connection
+var con = require("./connection");
+//to get data from front end
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+//for using js code inside html elements
+app.set('view engine','ejs');
+//listening app on port 3000
+app.listen(3000,function(){
+console.log("Server is running");
+})
+//add data[CREATE]
+app.post("/",function(req,res){
+var name = req.body.name;
+var email = req.body.email;
+var sql = 'INSERT INTO test (UserName, Email) VALUES (?)';
+var values = [name,email];
+con.query(sql,[values],function(err,result){
+if(err) throw err;
+res.redirect('/');
+})
+})
+//display data[READ]
+app.get("/", function(req, res) {
+var sql = 'SELECT * FROM test;';
+con.query(sql, function(error, result) {
+if (error) throw error;
+res.render("display", { test: result });
+});
+});
+//display update form
+app.get("/update",function(req,res){
+con.connect(function(error){
+if(error) console.log(error);
+var sql = "select * from test where id =?;";
+var id = req.query.id;
+con.query(sql,[id],function(error,result){
+
+if(error) console.log(error);
+res.render('update',{test : result});
+})
+})
+})
+//update data[UPDATE]
+app.post("/updateData",function(req,res){
+var name = req.body.name;
+var email = req.body.email;
+var id = req.body.id;
+var sql = "update test set UserName=?, Email=? where id=?;";
+con.query(sql,[name,email,id],function(error,result){
+if(error) console.log(error);
+res.redirect("/");
+})
+})
+//delete data[DELETE]
+app.get("/delete",function(req,res){
+con.connect(function(err){
+if(err) console.log(err);
+var sql = "delete from test where id=?;";
+var id = req.query.id;
+con.query(sql,[id],function(error,result){
+if(error) console.log(error);
+res.redirect("/");
+})
+})
+})
