@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Digital Clock App</title>
+<style>
+*{
+padding: 0;
+margin: 0;
+box-sizing: border-box;
+}
+body{
+background-color: black;
+}
+.clock{
+text-decoration: double;
+font-size: 50px;
+color: white;
+margin-left: 0px;
+text-align: center;
+margin-top: 10px;
+}
+.container{
+height: 150px;
+width: 400px;
+padding: 10px 10px 10px 10px;
+background-color: cornflowerblue;
+border-radius: 10px;
+margin-top: 270px;
+margin-left: 600px;
+}
+h1{
+margin-left: 92px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Digital Clock</h1>
+<div class="clock">
+<span id="hour"></span>
+<span>:</span>
+<span id="minute"></span>
+<span>:</span>
+<span id="second"></span>
+<span>&nbsp;</span>
+<span id="session"></span>
+</div>
+</div>
+16
+<script>
+function showTime() {
+const date = new Date();
+let hour = date.getHours();
+let minute = date.getMinutes();
+let second = date.getSeconds();
+let session = "AM";
+if (hour === 0) {
+hour = 12;
+}
+if (hour > 12) {
+hour = hour - 12;
+session = "PM";
+}
+hour = (hour < 10) ? "0" + hour : hour;
+minute = (minute < 10) ? "0" + minute : minute;
+second = (second < 10) ? "0" + second : second;
+document.getElementById("hour").textContent = hour;
+document.getElementById("minute").textContent = minute;
+document.getElementById("second").textContent = second;
+document.getElementById("session").textContent = session;
+}
+var myVar = setInterval(function () {
+showTime();
+}, 1);
+</script>
+</body>
+</html>

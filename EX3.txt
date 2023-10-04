@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Form Validation using DHTML</title>
+<style>
+body {
+background-color: #f0f0f0;
+}
+form {
+width: 400px;
+height: 250px;
+margin: auto;
+margin-top: 200px;
+padding: 20px;
+background-color: white;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-shadow: 0px 0px 5px #ccc;
+}
+label {
+display: block;
+margin-bottom: 10px;
+}
+input[type="text"], input[type="email"] {
+width: 100%;
+padding: 5px;
+margin-bottom: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-sizing: border-box;
+}
+button[type="submit"] {
+display: block;
+margin-top: 20px;
+padding: 10px;
+background-color: #4CAF50;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+button[type="submit"]:hover {
+background-color: #3e8e41;
+}
+#title{
+margin-left: 500px;
+}
+</style>
+</head>
+<body>
+10
+<h1 id="title"><b>Form validation using Dynamic HTML</b></h1>
+<form name="myForm" onsubmit="return validateForm()">
+<label for="firstName">First Name:</label>
+<input type="text" id="firstName" name="firstName"><br>
+<label for="lastName">Last Name:</label>
+<input type="text" id="lastName" name="lastName"><br>
+<label for="email">Email:</label>
+<input type="email" id="email" name="email"><br>
+<button type="submit">Submit</button>
+</form>
+<script type="text/javascript">
+function validateForm() {
+// Get the values of the form elements
+var firstName = document.forms["myForm"]["firstName"].value;
+var lastName = document.forms["myForm"]["lastName"].value;
+var email = document.forms["myForm"]["email"].value;
+// Validate the first name
+if (firstName == "") {
+alert("Please enter your first name");
+return false;
+}
+// Validate the last name
+else if (lastName == "") {
+alert("Please enter your last name");
+return false;
+}
+// Validate the email address
+else if (email == "") {
+alert("Please enter your email address");
+return false;
+}
+else if (!isValidEmail(email)) {
+alert("Please enter a valid email address");
+return false;
+}
+else{
+alert("Form submitted successfully");
+}
+return true;
+}
+function isValidEmail(email) {
+// Regular expression to validate email address
+var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+return emailRegex.test(email);
+}
+</script>
+</body>
+</html>
